@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://bi1m71tl3osl8"]
+
+[ext_resource type="Script" uid="uid://cacolr58fyu6d" path="res://objects/MapObject/map_object.gd" id="1_g5imp"]
+[ext_resource type="Texture2D" uid="uid://ftmurrgbrx6f" path="res://resources/spritesheet.png" id="1_ubu46"]
+
+[node name="MapObject" type="Node2D"]
+script = ExtResource("1_g5imp")
+
+[node name="sprite" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("1_ubu46")
+hframes = 16
+vframes = 16
+
+[node name="Line2D" type="Line2D" parent="."]
+points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+closed = true
+width = 1.0

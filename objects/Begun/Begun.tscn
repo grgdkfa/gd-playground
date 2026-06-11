@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3 uid="uid://bvrg78iabmrfu"]
+
+[ext_resource type="Script" uid="uid://cacolr58fyu6d" path="res://objects/MapObject/map_object.gd" id="1_f3u10"]
+[ext_resource type="Texture2D" uid="uid://ftmurrgbrx6f" path="res://resources/spritesheet.png" id="2_y4mx3"]
+[ext_resource type="Script" uid="uid://7qqmjvfsqjvc" path="res://components/movable.gd" id="3_pwono"]
+[ext_resource type="Script" uid="uid://b7p361p25iqdy" path="res://components/wandering.gd" id="4_nexuh"]
+
+[node name="Begun" type="Node2D"]
+script = ExtResource("1_f3u10")
+metadata/_custom_type_script = "uid://cacolr58fyu6d"
+
+[node name="sprite" type="Sprite2D" parent="."]
+modulate = Color(1, 0.30588236, 0.18039216, 1)
+texture_filter = 1
+texture = ExtResource("2_y4mx3")
+hframes = 16
+vframes = 16
+frame = 11
+
+[node name="movable" type="Node" parent="."]
+script = ExtResource("3_pwono")
+metadata/_custom_type_script = "uid://7qqmjvfsqjvc"
+
+[node name="wandering" type="Node" parent="."]
+script = ExtResource("4_nexuh")
+metadata/_custom_type_script = "uid://b7p361p25iqdy"
