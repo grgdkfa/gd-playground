@@ -30,17 +30,25 @@ func _ready() -> void:
 		_update_tile_position()
 		EventBus.global_step.connect(step)
 		EventBus.global_frame.connect(animate)
+		init_components()
 
 func _notification(what):
 	if what == NOTIFICATION_TRANSFORM_CHANGED:
 		print("Transform changed for ", self.name)
 		_update_tile_position()
 
+func init_components():
+	pass
 
 func set_tile_position(p: Vector2i):
 	position.x = p.x * Constants.TILE_SIZE
 	position.y = p.y * Constants.TILE_SIZE
 	tilePosition = p
+
+func add_tile_position(p: Vector2i):
+	position.x = position.x + p.x * Constants.TILE_SIZE
+	position.y = position.y + p.y * Constants.TILE_SIZE
+	tilePosition = tilePosition + p
 
 func set_sprite_id(id: int):
 	print('New sprite id:', id)

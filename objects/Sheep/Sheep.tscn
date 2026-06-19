@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://ccjv33sktqj3w"]
+
+[ext_resource type="Script" uid="uid://mio1bcvqmnlq" path="res://objects/Sheep/sheep.gd" id="1_idndw"]
+[ext_resource type="Texture2D" uid="uid://ftmurrgbrx6f" path="res://resources/spritesheet.png" id="2_3yuu7"]
+[ext_resource type="Script" uid="uid://7qqmjvfsqjvc" path="res://components/movable.gd" id="2_giyq5"]
+[ext_resource type="Script" uid="uid://bfm4c2ydt67hg" path="res://components/avoiding.gd" id="3_3yuu7"]
+
+[node name="Sheep" type="Node2D"]
+script = ExtResource("1_idndw")
+metadata/_custom_type_script = "uid://mio1bcvqmnlq"
+
+[node name="sprite" type="Sprite2D" parent="."]
+modulate = Color(1, 0.5686275, 1, 1)
+texture_filter = 1
+texture = ExtResource("2_3yuu7")
+hframes = 16
+vframes = 16
+frame = 13
+
+[node name="movable" type="Node" parent="."]
+script = ExtResource("2_giyq5")
+metadata/_custom_type_script = "uid://7qqmjvfsqjvc"
+
+[node name="avoiding" type="Node" parent="."]
+script = ExtResource("3_3yuu7")

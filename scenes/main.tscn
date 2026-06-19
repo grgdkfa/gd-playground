@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://hktldkb3dreq"]
+[gd_scene load_steps=7 format=3 uid="uid://hktldkb3dreq"]
 
 [ext_resource type="Script" uid="uid://c3rwdqv4iwue2" path="res://scripts/game.gd" id="1_0wfyh"]
 [ext_resource type="PackedScene" uid="uid://bi1m71tl3osl8" path="res://objects/MapObject/MapObject.tscn" id="1_o5qli"]
 [ext_resource type="Script" uid="uid://7qqmjvfsqjvc" path="res://components/movable.gd" id="3_jyhfs"]
 [ext_resource type="Script" uid="uid://b7p361p25iqdy" path="res://components/wandering.gd" id="4_tbgi4"]
 [ext_resource type="PackedScene" uid="uid://bvrg78iabmrfu" path="res://objects/Begun/Begun.tscn" id="5_tbgi4"]
+[ext_resource type="PackedScene" uid="uid://ccjv33sktqj3w" path="res://objects/Sheep/Sheep.tscn" id="6_tefeu"]
 
 [node name="main" type="Node2D"]
 scale = Vector2(5, 5)
@@ -32,3 +33,13 @@ tilePosition = Vector2i(1, 1)
 [node name="Begun" parent="." instance=ExtResource("5_tbgi4")]
 position = Vector2(60.799995, 60.799995)
 tilePosition = Vector2i(3, 3)
+
+[node name="Begun2" parent="." instance=ExtResource("5_tbgi4")]
+position = Vector2(115.2, 76.799995)
+tilePosition = Vector2i(7, 4)
+
+[node name="Sheep" parent="." node_paths=PackedStringArray("target") instance=ExtResource("6_tefeu")]
+position = Vector2(92.799995, 60.8)
+target = NodePath("../Begun")
+spriteId = 10
+tilePosition = Vector2i(5, 3)

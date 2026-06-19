@@ -22,6 +22,12 @@ func setPosition(p: Vector2i, prev = null):
 	else:
 		isTeleporting = false
 
+func addPosition(d: Vector2i):
+	setPosition(entity.tilePosition + d)
+
+func standStill():
+	setPosition(entity.tilePosition)
+
 # Runs every step
 func step():
 	if isTeleporting:
@@ -31,7 +37,7 @@ func step():
 func animate(t: float): # t = 0..1
 	var _sprite = entity.get_sprite()
 
-	var LEDGE = 0.2
+	var LEDGE = 0.9
 	t = min(t / LEDGE, 1)
 
 	# TODO: make prettier teleport animation
