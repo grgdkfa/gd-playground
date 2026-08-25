@@ -1,14 +1,21 @@
-[gd_scene load_steps=3 format=3 uid="uid://du61ml5xr6q0a"]
+[gd_scene load_steps=5 format=3 uid="uid://du61ml5xr6q0a"]
 
 [ext_resource type="PackedScene" uid="uid://dy0jkwradbjax" path="res://objects/knight2.tscn" id="1_f3sb7"]
+[ext_resource type="PackedScene" uid="uid://f5np64gb6ik2" path="res://objects/Map1.tscn" id="1_fj7yv"]
+[ext_resource type="Script" uid="uid://lffh7b13vjyl" path="res://objects/camera.gd" id="1_tlwt5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_f3sb7"]
 
 [node name="world" type="Node2D"]
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="camera" type="Node2D" parent="." node_paths=PackedStringArray("target")]
+script = ExtResource("1_tlwt5")
+target = NodePath("../Knight2")
+
+[node name="Camera2D" type="Camera2D" parent="camera"]
 
 [node name="walls" type="Node2D" parent="."]
+position = Vector2(564, -389)
 
 [node name="StaticBody2D" type="StaticBody2D" parent="walls"]
 
@@ -24,4 +31,8 @@ position = Vector2(0, -333.9999)
 scale = Vector2(-57.583584, 1.1561373)
 shape = SubResource("RectangleShape2D_f3sb7")
 
+[node name="Map1" parent="." instance=ExtResource("1_fj7yv")]
+
 [node name="Knight2" parent="." instance=ExtResource("1_f3sb7")]
+position = Vector2(115, 108)
+power = 300.0
