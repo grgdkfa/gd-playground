@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>warc2tiles</title>
+
+	<style>
+	    body {
+					margin: 0;
+					padding: 0;
+					font-family: 'Arial';
+		}
+
+		.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+		}
+
+    .panel {
+      display: flex;
+      gap: 2em;
+    }
+
+    .tiles {
+      position: relative;
+    }
+
+		.tiles img {
+		    border: 1px solid red;
+		}
+
+    .sample {
+      position: relative;
+    }
+
+    .dot {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      border: 1px solid red;
+      box-sizing: border-box;
+      color: red;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .dot.hidden {
+      opacity: 0.1;
+      background-color: rgba(255, 255, 255, 0.01);
+    }
+	</style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="info"></div>
+      <div class="panel">
+        <div class="tiles">
+            <img src="tiles.png"/>
+            <div class="dot hidden" style="top: 0px; left: 0px;"></div>
+        </div>
+        <div class="sample">
+          <img src="grab.png"/>
+        </div>
+      </div>
+    </div>
+
+    <script>
+    const terrains = {
+      'walls-human': {
+        start: 16, end: 33
+      },
+      'walls-orc': {
+        start: 34, end: 51
+      },
+      'walls-human-damaged': {
+        start: 52, end: 69
+      },
+      'walls-orc-damaged': {
+        start: 70, end: 87
+      },
+      'walls-ruins': {
+        start: 88, end: 101
+      },
+      'grass': {
+        start: 356, end: 363
+      },
+      'grass-dark': {
+        start: 364, end: 371
+      },
+      'dirt': {
+        start: 334, end: 344
+      },
+      'dirt-dark': {
+        start: 345, end: 355
+      },
+      'woods': {
+        start: 102, end: 141
+      }
+    }
+
+
+    var info = document.querySelector('.info');
+    var tilesContainer = document.querySelector('.tiles')
+    var tilesImage = tilesContainer.querySelector('img')
+    var sampleContainer = document.querySelector('.sample')
+    var sampleImage = document.querySelector('.sample img')
+    var tileDot = tilesContainer.querySelector('.dot')
+
+    let currentTile = null
+
+    tilesImage.addEventListener('mousemove', e => {
+      const tx = e.offsetX / 33 | 0
+      const ty = e.offsetY / 33 | 0
+      const i = ty * 19 + tx
+      if (currentTile !== i) {
+        let t = sampleContainer.querySelectorAll(`.dot`)
+        t.forEach(d => d.classList.add('hidden'))
+        currentTile = i
+        t = sampleContainer.querySelectorAll(`.dot[data-tile="${i}"]`)
+        t.forEach(d => d.classList.remove('hidden'))
+      }
+      info.textContent = `${tx} : ${ty} (${i})`;
+    })
+
+    tilesImage.addEventListener('mouseout', e => {
+      info.textContent = '---'
+    })
+
+    function getTile(tx, ty) {
+      return [tx * 33, ty * 33]
+    }
+
+    function analyze() {
+      const canvas = document.createElement('canvas');
+      const W = tilesImage.width
+      const H = tilesImage.height
+      canvas.width = W
+      canvas.height = H
+
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(tilesImage, 0, 0)
+
+      const result = []
+
+      const { width, data } = ctx.getImageData(0, 0, W, H)
+
+      function getPixel(x, y) {
+        const index = (y * width + x) * 4;
+        return {
+          r: data[index],
+          g: data[index + 1],
+          b: data[index + 2],
+          a: data[index + 3]
+        }
+      }
+      const list = []
+      for (let ty = 0; ty < 20; ty++) {
+         for (let tx = 0; tx < 19; tx++) {
+          const idx = ty * 19 + tx
+          const p = getPixel(tx * 33, ty * 33)
+          if (p.a == 255) {
+            list.push(idx)
+          }
+        }
+      }
+      console.log(`Total tiles: ${list.length}`)
+
+      function processTile(n) {
+        if (n >= list.length) {
+          console.log('Success!')
+          return
+        }
+
+        const idx = list[n]
+        const [tx, ty] = getTile(idx % 19, idx / 19 | 0)
+
+        // top
+        let row = []
+        for (let i=0; i<32; i++) {
+          const p = getPixel(tx + i, ty)
+          row.push(p)
+        }
+
+
+        setTimeout(10, () => {
+          processTile(n + 1)
+        })
+      }
+
+      processTile(0)
+    }
+
+    tilesImage.onload = () => {
+      //analyze()
+    }
+    </script>
+    <script src="./pipa.js"></script>
+</body>
+</html>
