@@ -1,24 +1,24 @@
+function getCtx(image) {
+    const canvas = document.createElement('canvas')
+    const w = image.width
+    const h = image.height
+    canvas.width = w
+    canvas.height = h
+    const ctx = canvas.getContext('2d')
+    ctx.drawImage(image, 0, 0)
+    const imageData = ctx.getImageData(0, 0, w, h)
+
+    return {
+        w,
+        h,
+        canvas,
+        ctx,
+        data: imageData.data
+    }
+}
 
 function findTiles() {
-    function getCtx(image) {
-        const canvas = document.createElement('canvas')
-        const w = image.width
-        const h = image.height
-        canvas.width = w
-        canvas.height = h
-        const ctx = canvas.getContext('2d')
-        ctx.drawImage(image, 0, 0)
-        const imageData = ctx.getImageData(0, 0, w, h)
-
-        return {
-            w,
-            h,
-            canvas,
-            ctx,
-            data: imageData.data
-        }
-    }
-
+    
     const tiles = getCtx(tilesImage)
     const sample = getCtx(sampleImage)
     const START = 102
@@ -133,6 +133,91 @@ function findTiles() {
     }
 }
 
+function findDataTiles() {
+    const tiles = getCtx(tilesImage)
+    const data = getCtx(dataImage)
+
+    const START = 16
+    const END = 371
+
+    function getTilePixel(tx, ty, x, y) {
+        const sx = tx * 33 + x
+        const sy = ty * 33 + y
+        const index = (sy * tiles.w + sx) * 4
+        return [
+            tiles.data[index],
+            tiles.data[index + 1],
+            tiles.data[index + 2],
+            tiles.data[index + 3]
+        ]
+    }
+
+    function getDataPixel(tx, ty, x, y) {
+        const sx = tx * 32 + x
+        const sy = ty * 32 + y
+        const index = (sy * data.w + sx) * 4
+        return [
+            data.data[index],
+            data.data[index + 1],
+            data.data[index + 2],
+            data.data[index + 3]
+        ]
+    }
+
+    const map = {}
+
+    for (let ix = 0; ix < data.w / 32; ix++) {
+        for (let iy = 0; iy < data.h / 32; iy++) {
+            const p = getDataPixel(ix, iy, 0, 0)
+            if (p[3] === 0) {
+                console.log(`Data tile at (${ix}, ${iy}) is transparent, skipping`)
+                continue
+            }
+            let bestMatch = null
+            let bestScore = Infinity
+            for (let tileIndex = START; tileIndex <= END; tileIndex++) {
+                const tileX = tileIndex % 19
+                const tileY = Math.floor(tileIndex / 19)
+                let score = 0
+                for (let x = 0; x < 32; x += 2) {
+                    for (let y = 0; y < 32; y += 2) {
+                        const tilePixel = getTilePixel(tileX, tileY, x, y)
+                        const dataPixel = getDataPixel(ix, iy, x, y)
+                        score += Math.sqrt(Math.pow(tilePixel[0] - dataPixel[0], 2) + Math.pow(tilePixel[1] - dataPixel[1], 2) + Math.pow(tilePixel[2] - dataPixel[2], 2))
+                    }
+                }
+                if (score < bestScore) {
+                    bestScore = score
+                    bestMatch = tileIndex
+                }
+            }
+            console.log(`Best match for data tile at (${ix}, ${iy}) is tile ${bestMatch} with score ${bestScore}`)
+            map[`${ix},${iy}`] = bestMatch
+        }
+    }
+
+    dataImage.addEventListener('mousemove', (event) => {
+        const rect = dataImage.getBoundingClientRect()
+        const x = event.clientX - rect.left
+        const y = event.clientY - rect.top
+        const ix = Math.floor(x / 32)
+        const iy = Math.floor(y / 32)
+        const key = `${ix},${iy}`
+
+        if (map[key] !== undefined) {
+            const tileIndex = map[key]
+            const tileX = tileIndex % 19
+            const tileY = Math.floor(tileIndex / 19)
+            tileDot.style.left = `${tileX * 33}px`
+            tileDot.style.top = `${tileY * 33}px`
+            tileDot.classList.remove('hidden')
+            info.textContent = `${ix}:${iy}`
+        } else {
+            tileDot.classList.add('hidden')
+        }
+    })
+}
+
 Promise.all([
     new Promise(resolve => {
         tilesImage.onload = () => { resolve() }
@@ -140,7 +225,12 @@ Promise.all([
     new Promise(resolve => {
         sampleImage.onload = () => { resolve() }
     }),
+    new Promise(resolve => {
+        dataImage.onload = () => { resolve() }
+    })
 ]).then(() => {
     console.log('All images are loaded')
-    findTiles()
+    findDataTiles()
+}).catch(e => {
+    console.log(e);
 })

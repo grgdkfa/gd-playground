@@ -18,9 +18,19 @@
     align-items: center;
 		}
 
+    .info {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      background-color: white;
+      padding: 0.1em 0.5em;
+      z-index: 99999;
+    }
+
     .panel {
       display: flex;
       gap: 2em;
+      margin-top: 2em;
     }
 
     .tiles {
@@ -62,6 +72,9 @@
         </div>
         <div class="sample">
           <img src="grab.png"/>
+        </div>
+        <div class="data">
+          <img src="forest.png"/>
         </div>
       </div>
     </div>
@@ -106,6 +119,8 @@
     var tilesImage = tilesContainer.querySelector('img')
     var sampleContainer = document.querySelector('.sample')
     var sampleImage = document.querySelector('.sample img')
+    var dataContainer = document.querySelector('.data')
+    var dataImage = document.querySelector('.data img')
     var tileDot = tilesContainer.querySelector('.dot')
 
     let currentTile = null
@@ -132,69 +147,6 @@
       return [tx * 33, ty * 33]
     }
 
-    function analyze() {
-      const canvas = document.createElement('canvas');
-      const W = tilesImage.width
-      const H = tilesImage.height
-      canvas.width = W
-      canvas.height = H
-
-      const ctx = canvas.getContext('2d')
-      ctx.drawImage(tilesImage, 0, 0)
-
-      const result = []
-
-      const { width, data } = ctx.getImageData(0, 0, W, H)
-
-      function getPixel(x, y) {
-        const index = (y * width + x) * 4;
-        return {
-          r: data[index],
-          g: data[index + 1],
-          b: data[index + 2],
-          a: data[index + 3]
-        }
-      }
-      const list = []
-      for (let ty = 0; ty < 20; ty++) {
-         for (let tx = 0; tx < 19; tx++) {
-          const idx = ty * 19 + tx
-          const p = getPixel(tx * 33, ty * 33)
-          if (p.a == 255) {
-            list.push(idx)
-          }
-        }
-      }
-      console.log(`Total tiles: ${list.length}`)
-
-      function processTile(n) {
-        if (n >= list.length) {
-          console.log('Success!')
-          return
-        }
-
-        const idx = list[n]
-        const [tx, ty] = getTile(idx % 19, idx / 19 | 0)
-
-        // top
-        let row = []
-        for (let i=0; i<32; i++) {
-          const p = getPixel(tx + i, ty)
-          row.push(p)
-        }
-
-
-        setTimeout(10, () => {
-          processTile(n + 1)
-        })
-      }
-
-      processTile(0)
-    }
-
-    tilesImage.onload = () => {
-      //analyze()
-    }
     </script>
     <script src="./pipa.js"></script>
 </body>
