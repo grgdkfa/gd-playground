@@ -105,4 +105,13 @@ const TILES = {
   [Terrain.DARK_GRASS]: {
     [TileTypes.full]: '0-2,131;4-11,131'
   },
+  [Terrain.FOREST]: {
+    [TileTypes.full]: '0-2,132'
+  },
+  [Terrain.ROCKS]: {
+    [TileTypes.full]: '0-3,133'
+  },
+  [Terrain.WATER + '|' + Terrain.DARK_WATER]: {
+    [TileTypes.]
+  }
 }
