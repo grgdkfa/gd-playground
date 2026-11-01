@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noise</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #19e4c9;
+        }
+        .cc {
+            image-rendering: pixelated;
+            transform: scale(5);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="100" height="80" class="cc"></canvas>
+    <script src="noise.js"></script>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        const colors = {
+            grass: [34, 139, 34],
+            water: [0, 191, 255],
+            forest: [0, 100, 0],
+            rocks: [169, 169, 169],
+        };
+
+        const ccc = Object.values(colors);
+
+        const width = canvas.width;
+        const height = canvas.height;
+
+        function indexOfMax(arr) {
+            if (arr.length === 0) {
+                return -1;
+            }
+
+            var max = arr[0];
+            var maxIndex = 0;
+
+            for (var i = 1; i < arr.length; i++) {
+                if (arr[i] > max) {
+                    maxIndex = i;
+                    max = arr[i];
+                }
+            }
+
+            return maxIndex;
+        }
+
+        noise.seed(Math.random());
+
+        function n(x, y, scale, offset) {
+            return (noise.simplex2(x * scale + offset, y * scale) + 1) / 2;
+        }
+
+        function drawNoise() {
+            const imageData = ctx.createImageData(width, height);
+            const data = imageData.data;
+
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    const grassScale = 0.02;
+                    const waterScale = 0.05;
+                    const forestScale = 0.05;
+                    const rocksScale = 0.1;
+                    const grass = n(x, y, grassScale, 0);
+                    // const water = Math.pow(n(x, y, waterScale, 1000), 2) + Math.abs(x / width - 0.5) * 0.5 + Math.abs(y / height - 0.5) * 0.5;
+                    const water = Math.pow((x - width / 2) / (width / 2), 4) + Math.pow((y - height / 2) / (height / 2), 4) + Math.pow(n(x, y, waterScale, 1000), 2) * 0.3;
+                    const forest = n(x, y, forestScale, 2000) * 0.6;
+                    const rocks = n(x, y, rocksScale, 3000) * 0.3;
+                    
+                    const index = indexOfMax([grass, water, forest, rocks]);
+                    const color = ccc[index];
+
+                    const cell = (y * width + x) * 4;
+                    data[cell] = color[0];      // Red
+                    data[cell + 1] = color[1];  // Green
+                    data[cell + 2] = color[2];  // Blue
+                    data[cell + 3] = 255;    // Alpha
+
+                    // const v = Math.floor(water * 255);
+                    // data[cell] = v
+                    // data[cell + 1] = v
+                    // data[cell + 2] = v
+                    // data[cell + 3] = 255
+                }
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        drawNoise();
+    </script>
+</body>
+</html>

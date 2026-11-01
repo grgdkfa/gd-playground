@@ -170,7 +170,7 @@ function findDataTiles() {
         for (let iy = 0; iy < data.h / 32; iy++) {
             const p = getDataPixel(ix, iy, 0, 0)
             if (p[3] === 0) {
-                console.log(`Data tile at (${ix}, ${iy}) is transparent, skipping`)
+                // console.log(`Data tile at (${ix}, ${iy}) is transparent, skipping`)
                 continue
             }
             let bestMatch = null
@@ -191,7 +191,7 @@ function findDataTiles() {
                     bestMatch = tileIndex
                 }
             }
-            console.log(`Best match for data tile at (${ix}, ${iy}) is tile ${bestMatch} with score ${bestScore}`)
+            // console.log(`Best match for data tile at (${ix}, ${iy}) is tile ${bestMatch} with score ${bestScore}`)
             map[`${ix},${iy}`] = bestMatch
         }
     }
@@ -211,9 +211,10 @@ function findDataTiles() {
             tileDot.style.left = `${tileX * 33}px`
             tileDot.style.top = `${tileY * 33}px`
             tileDot.classList.remove('hidden')
-            info.textContent = `${ix}:${iy}`
+            info.textContent = `${ix}:${iy} --- ${iy - 14}`
         } else {
             tileDot.classList.add('hidden')
+            info.textContent = `NO ${ix}:${iy}`
         }
     })
 }
@@ -222,9 +223,9 @@ Promise.all([
     new Promise(resolve => {
         tilesImage.onload = () => { resolve() }
     }), 
-    new Promise(resolve => {
-        sampleImage.onload = () => { resolve() }
-    }),
+    // new Promise(resolve => {
+    //     sampleImage.onload = () => { resolve() }
+    // }),
     new Promise(resolve => {
         dataImage.onload = () => { resolve() }
     })

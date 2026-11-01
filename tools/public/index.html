@@ -43,6 +43,7 @@
 
     .sample {
       position: relative;
+      display: none;
     }
 
     .dot {
@@ -69,6 +70,9 @@
         <div class="tiles">
             <img src="tiles.png"/>
             <div class="dot hidden" style="top: 0px; left: 0px;"></div>
+        </div>
+        <div class="editor">
+          <canvas id="editor" width="480" height="640"></canvas>
         </div>
         <div class="sample">
           <img src="grab.png"/>
@@ -122,8 +126,64 @@
     var dataContainer = document.querySelector('.data')
     var dataImage = document.querySelector('.data img')
     var tileDot = tilesContainer.querySelector('.dot')
+    var editorCanvas = document.getElementById('editor')
 
     let currentTile = null
+
+    const editor = (() => {
+      const mw = editorCanvas.width / 32 | 0
+      const mh = editorCanvas.height / 32 | 0
+      const map = []
+
+      let currentTerrain = null
+
+      for (let y = 0; y < mh; y++) {
+        for (let x = 0; x < mw; x++) {
+          map.push(356)
+        }
+      }
+
+      function drawMap() {
+        const ctx = editorCanvas.getContext('2d')
+        // ctx.clearRect(0, 0, editorCanvas.width, editorCanvas.height)
+        for (let y = 0; y < mh; y++) {
+          for (let x = 0; x < mw; x++) {
+            const tileIndex = map[x + y * mw]
+            const sx = (tileIndex % 19) * 33
+            const sy = (tileIndex / 19 | 0) * 33
+            ctx.drawImage(tilesImage, sx, sy, 32, 32, x * 32, y * 32, 32, 32)
+          }
+        }
+      }
+
+      const canvas = editorCanvas
+      const ctx = canvas.getContext('2d')
+      ctx.imageSmoothingEnabled = false
+      
+
+      tilesImage.addEventListener('click', e => {
+        const tx = e.offsetX / 33 | 0
+        const ty = e.offsetY / 33 | 0
+        const i = ty * 19 + tx
+        if (currentTerrain !== i) {
+          currentTerrain = i
+        }
+      })
+
+      canvas.addEventListener('click', e => {
+        const tx = e.offsetX / 32 | 0
+        const ty = e.offsetY / 32 | 0
+        if (currentTerrain !== null) {
+          map[tx + ty * mw] = currentTerrain
+          drawMap()
+        }
+      })
+
+      setTimeout(() => {
+        drawMap()
+        console.log('Map drawn')
+      }, 1000)
+    })()
 
     tilesImage.addEventListener('mousemove', e => {
       const tx = e.offsetX / 33 | 0
