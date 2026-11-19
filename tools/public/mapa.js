@@ -164,3 +164,9 @@ const TILES = parseData({
   [Terrain.FOREST + '|' + Terrain.GRASS]: transition(84),
 })
 
+module.exports = {
+  Terrain,
+  TileTypes,
+  TILES,
+  transitions
+}
