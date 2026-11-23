@@ -15,7 +15,7 @@ export const Terrain: Record<string, string> = {
   DARK_DIRT: 'D'
 };
 
-const transitions = {
+export const transitions = {
   [Terrain.WATER]: {
     [Terrain.DIRT]: 'wd',
   },
@@ -44,7 +44,6 @@ const transitions = {
     [Terrain.GRASS]: 'fg',
   },
 };
-
 interface MapDataJson {
     [terrain: string]: {
         [pattern: string]: {

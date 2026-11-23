@@ -63,7 +63,7 @@ func _physics_process(_delta: float) -> void:
 	if (velocity > 0.01):
 		var n = Vector2(-v.y, v.x)
 		var n_force: float = n.x * linear_velocity.x + n.y * linear_velocity.y
-		apply_central_force(-n_force * n * 0.63)
+		apply_central_force(-n_force * n * 0.03)
 
 		var a = atan2(linear_velocity.y, linear_velocity.x)
 		a = a + PI / 8

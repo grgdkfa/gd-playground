@@ -1,7 +1,8 @@
 
-import { placeTile } from "./functions.js";
+import { createMap, placeTile } from "./functions.js";
 import { Terrain, tiles } from "./mapData.js";
 import { MapData } from "./types.js";
+import { processMap } from "./wfc.js";
 
 const COLORS = {
     w: '#2779F5',
@@ -18,11 +19,7 @@ const TILE_SIZE = 32;
 const MAP_WIDTH = 20;
 const MAP_HEIGHT = 15;
 
-const map: MapData = {
-    width: MAP_WIDTH,
-    height: MAP_HEIGHT,
-    cells: Array.from({ length: MAP_HEIGHT }, () => Array(MAP_WIDTH).fill(Terrain.GRASS))
-}
+const map: MapData = createMap(MAP_WIDTH, MAP_HEIGHT, Terrain.WATER);
 
 const lookup = new Map<string, string[]>();
 
@@ -83,12 +80,15 @@ document.addEventListener("DOMContentLoaded", () => {
     draw();
 
     canvas.addEventListener("click", (event) => {
-        const rect = canvas.getBoundingClientRect();
-        const x = Math.floor((event.clientX - rect.left) / TILE_SIZE);
-        const y = Math.floor((event.clientY - rect.top) / TILE_SIZE);
+        // const rect = canvas.getBoundingClientRect();
+        // const x = Math.floor((event.clientX - rect.left) / TILE_SIZE);
+        // const y = Math.floor((event.clientY - rect.top) / TILE_SIZE);
 
-        debugger
-        placeTile(map, tiles, x, y, currentTileId);
+        // debugger
+        // placeTile(map, tiles, x, y, currentTileId);
+        // draw();
+
+        processMap(map, 0.5);
         draw();
     })
 });

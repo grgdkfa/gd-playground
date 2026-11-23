@@ -44,6 +44,32 @@ export interface Position {
   y: number;
 }
 
+export const EDGE_SUBTILES: Record<Direction, Position[]> = {
+  n: [
+    { x: 0, y: 0 },
+    { x: 1, y: 0 },
+  ],
+  s: [
+    { x: 0, y: 1 },
+    { x: 1, y: 1 },
+  ],
+  w: [
+    { x: 0, y: 0 },
+    { x: 0, y: 1 },
+  ],
+  e: [
+    { x: 1, y: 0 },
+    { x: 1, y: 1 },
+  ],
+  
+  nw: [{ x: 0, y: 0 }],
+  ne: [{ x: 1, y: 0 }],
+  sw: [{ x: 0, y: 1 }],
+  se: [{ x: 1, y: 1 }],
+}
+
+export type CardinalDirection = 'w' | 'e' | 'n' | 's';
+
 export interface MapData {
   width: number;
   height: number;
